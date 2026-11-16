@@ -374,7 +374,6 @@ def pck(predictions, queries):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_dir", default="data")
     parser.add_argument("--cache_dir", default="cache")
     parser.add_argument("--output_dir", default="results")
     parser.add_argument("--submission_dir", default="submissions")
