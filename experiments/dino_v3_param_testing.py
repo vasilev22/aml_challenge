@@ -39,7 +39,8 @@ from transformers import AutoModel
 RANDOM_SEED = 42
 VALIDATION_FRACTION = 0.20
 
-RESOLUTIONS = [640, 800, 960]
+RESOLUTIONS = [640, 798, 800, 960,1024 , 1280]
+
 RESIZE_MODES = ["square"]                    # aggiungi "keep_aspect" se vuoi
 FLIP_TTA = [False, True]
 
@@ -64,6 +65,9 @@ NORM_MEAN = [0.485, 0.456, 0.406]
 NORM_STD = [0.229, 0.224, 0.225]
 
 HF_NAMES = {
+    "dinov2_vits14": "facebook/dinov2-small",
+    "dinov2_vitb14": "facebook/dinov2-base",
+    "dinov2_vitl14": "facebook/dinov2-large",
     "dinov3_vits16": "facebook/dinov3-vits16-pretrain-lvd1689m",
     "dinov3_vitb16": "facebook/dinov3-vitb16-pretrain-lvd1689m",
     "dinov3_vitl16": "facebook/dinov3-vitl16-pretrain-lvd1689m",
@@ -293,7 +297,7 @@ def summarize(errors, queries):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_dir", default=".")
+    parser.add_argument("--data_dir", default="data")
     parser.add_argument("--output_dir", default=".")
     parser.add_argument("--model", default="dinov3_vitb16")
     parser.add_argument("--split", choices=["all", "val"], default="all")
