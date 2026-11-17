@@ -40,7 +40,8 @@ NORM_STD = [0.229, 0.224, 0.225]
 MAIN_THRESHOLD = 0.10
 
 FLIP_TTA = True
-WINDOW = ("window", 2, 0.05)          # soft-argmax: raggio (in celle), temperatura
+#WINDOW = ("window", 2, 0.05)          # soft-argmax: raggio (in celle), temperatura
+WINDOW = ("window", 1, 0.05)
 
 LAMBDAS = [0.0, 0.02, 0.05, 0.1, 0.2, 0.5]
 BOX_PENALTY = 1.0           # effectively a hard mask (cosine sims live in [-1, 1])
