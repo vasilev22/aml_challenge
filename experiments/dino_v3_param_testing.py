@@ -299,7 +299,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", default="data")
     parser.add_argument("--output_dir", default=".")
-    parser.add_argument("--model", default="dinov3_vitb16")
+    parser.add_argument("--model", default="dinov3_vitl16")
     parser.add_argument("--split", choices=["all", "val"], default="all")
     parser.add_argument("--resolutions", type=int, nargs="+", default=RESOLUTIONS)
     parser.add_argument("--resize_modes", nargs="+", default=RESIZE_MODES)
