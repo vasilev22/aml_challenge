@@ -1,0 +1,23 @@
+current coarse stage (ViT-B + head): 0.6148
+
+          variant  SD alone  best blend     blend  gain vs current
+  up1+up2_e2_flip    0.3279      0.6216   z w=0.1           0.0068
+      up2_e4_flip    0.1804      0.6200   z w=0.1           0.0052
+      up2_e2_flip    0.1800      0.6192   z w=0.1           0.0044
+  up1+up2_e8_flip    0.3246      0.6188   z w=0.1           0.0040
+      up2_e8_flip    0.1804      0.6180   z w=0.1           0.0032
+  up1+up2_e4_flip    0.3267      0.6176   z w=0.1           0.0028
+up1+up2_e2_noflip    0.2786      0.6156   z w=0.1           0.0008
+up1+up2_e8_noflip    0.2802      0.6148   z w=0.1           0.0000
+up1+up2_e4_noflip    0.2826      0.6140   z w=0.1          -0.0008
+      up1_e2_flip    0.3852      0.6140   z w=0.1          -0.0008
+      up1_e4_flip    0.3860      0.6136 raw w=0.1          -0.0012
+      up1_e8_flip    0.3892      0.6132 raw w=0.1          -0.0016
+    up1_e8_noflip    0.3230      0.6120 raw w=0.1          -0.0028
+    up2_e8_noflip    0.1599      0.6116   z w=0.1          -0.0032
+    up1_e2_noflip    0.3222      0.6108 raw w=0.1          -0.0040
+    up2_e4_noflip    0.1519      0.6104   z w=0.1          -0.0044
+    up1_e4_noflip    0.3275      0.6100 raw w=0.1          -0.0048
+    up2_e2_noflip    0.1471      0.6084   z w=0.1          -0.0064
+
+BEST: up1+up2_e2_flip [z w=0.1] -> 0.6216 (fixed 92, broke 75, McNemar p = 0.216)

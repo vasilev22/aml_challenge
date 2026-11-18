@@ -1,0 +1,11 @@
+available maps: ['fused', 'head', 'v3B', 'v3L', 'v3Lhead', 'vitB']
+base             coarse PCK 0.6313  weights {'vitB': 0.25, 'head': 0.75, 'fused': 0.5}
++v3L raw         coarse PCK 0.6313  weights {'vitB': 0.25, 'head': 0.75, 'fused': 0.5, 'v3L': 0.0}
++v3L head        coarse PCK 0.6397  weights {'vitB': 0.25, 'head': 0.75, 'fused': 0.5, 'v3Lhead': 0.75}
++v3L raw+head    coarse PCK 0.6397  weights {'vitB': 0.25, 'head': 0.75, 'fused': 0.5, 'v3L': 0.0, 'v3Lhead': 0.75}
++v3B raw         coarse PCK 0.6313  weights {'vitB': 0.25, 'head': 0.75, 'fused': 0.5, 'v3B': 0.0}
+
+WINNER: +v3L head  0.6397 vs base 0.6313  (fixed 118, broke 97, McNemar p = 0.172)
+running refinement windows on the new coarse stage ...
+final (coarse +v3L head + Kaggle refinement recipe): local PCK 0.6261  (previous best file fused_vote_refineBL_recipe: local 0.6108, Kaggle 0.594)
+Saved submissions/dinov3_vote_refineBL_recipe.csv (577 rows)

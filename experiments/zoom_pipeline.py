@@ -301,6 +301,8 @@ def main():
     parser.add_argument("--min_frac", type=float, default=0.25)
     parser.add_argument("--square", action="store_true")
     parser.add_argument("--fp32", action="store_true")
+    parser.add_argument("--save_features", action="store_true",
+                        help="also save per-pair crop features (for train_head.py)")
     parser.add_argument("--data_dir", default="data")
     parser.add_argument("--cache_dir", default="cache")
     args = parser.parse_args()
@@ -352,6 +354,7 @@ def main():
     zoom_maps = torch.zeros(n, g, g, dtype=torch.float16)
     glob_maps = torch.zeros(n, g, g, dtype=torch.float16)
     regions = torch.zeros(n, 4, dtype=torch.float32)
+    crop_features = {}
 
     for pair_id, group in tqdm(queries.groupby("pair_id", sort=False), desc=f"maps {args.backbone}"):
         meta = pairs[pair_id]
@@ -367,6 +370,9 @@ def main():
                 (load_image(os.path.join(args.data_dir, meta["source_image"])), box["source_box"]),
                 (load_image(os.path.join(args.data_dir, meta["target_image"])), box["target_box"]),
             ], res)
+
+        if args.save_features:
+            crop_features[pair_id] = {"fs": zs.half().cpu(), "rs": tuple(rs), "ft": zt.half().cpu(), "rt": tuple(rt)}
 
         points = torch.tensor(group[["source_x", "source_y"]].to_numpy(), dtype=torch.float32, device=DEVICE)
         q = len(points)
@@ -396,6 +402,13 @@ def main():
         "backbone": args.backbone, "res": res, "crops": crops, "split": args.split,
     }, out_path)
     print(f"Saved {out_path}  ({time.time() - start:.0f}s)")
+    if args.save_features:
+        feature_path = os.path.join(
+            args.cache_dir, "features", f"{args.split}_{args.backbone}_{res}_{precision}_{crops}.pt"
+        )
+        os.makedirs(os.path.dirname(feature_path), exist_ok=True)
+        torch.save(crop_features, feature_path)
+        print(f"Saved {feature_path}")
 
 
 if __name__ == "__main__":

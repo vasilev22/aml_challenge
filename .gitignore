@@ -181,3 +181,6 @@ cython_debug/
 .cursorindexingignore
 # Feature caches
 cache/
+
+# Manual inspection sheets (generated)
+experiments/inspection/

@@ -59,6 +59,8 @@ def main():
     parser.add_argument("--data_dir", default="data")
     parser.add_argument("--cache_dir", default="cache")
     parser.add_argument("--name", default=None, help="suffix naming the coarse config")
+    parser.add_argument("--save_features", action="store_true",
+                        help="also save per-query window features (for train_head.py --windows)")
     args = parser.parse_args()
 
     start = time.time()
@@ -85,6 +87,7 @@ def main():
     local_maps = torch.zeros(n, g, g, dtype=torch.float16)
     prior_maps = torch.zeros(n, g, g, dtype=torch.float16)
     windows = torch.zeros(n, 4, dtype=torch.float32)
+    window_features = {}
 
     for pair_id, group in tqdm(queries.groupby("pair_id", sort=False), desc="refine"):
         meta = pairs[pair_id]
@@ -127,6 +130,9 @@ def main():
             local_maps[r] = local.half().cpu()
             prior_maps[r] = prior.half().cpu()
             windows[r] = torch.tensor(rt, dtype=torch.float32)
+            if args.save_features:
+                window_features[int(r)] = {"fs": fs.half().cpu(), "rs": tuple(rs),
+                                           "ft": ft.half().cpu(), "rt": tuple(rt)}
 
     name = args.name or f"w{'-'.join(str(w) for w in weights)}_a{args.alpha}_r{method[1]}t{method[2]}"
     out = os.path.join(args.cache_dir, "simmaps",
@@ -135,6 +141,11 @@ def main():
                 "backbone": args.backbone, "res": args.res, "crops": f"refine_f{args.frac}",
                 "split": args.split}, out)
     print(f"Saved {out}  ({time.time() - start:.0f}s)")
+    if args.save_features:
+        feature_path = os.path.join(args.cache_dir, "features", os.path.basename(out))
+        os.makedirs(os.path.dirname(feature_path), exist_ok=True)
+        torch.save(window_features, feature_path)
+        print(f"Saved {feature_path}")
 
 
 if __name__ == "__main__":
