@@ -273,6 +273,7 @@ def predict(queries, pairs, cache, model, data_dir, configs, seed=0, debug=None)
     generator = torch.Generator(device=DEVICE).manual_seed(seed)
     need_zoom = any(c[0] == "zoom" for c in configs)
     found = 0
+    lost = 0
 
     groups = list(queries.groupby("pair_id", sort=False))
     for pair_id, group in tqdm(groups, desc="pairs"):
@@ -306,6 +307,14 @@ def predict(queries, pairs, cache, model, data_dir, configs, seed=0, debug=None)
             object_size = float(np.clip(
                 (hi - lo).max(), 0.1 * max(target_size), 1.5 * max(target_size)
             ))
+
+        # diagnostica (solo train): il target accettato cade dentro il crop?
+        if "target_points" in group.columns:
+            tx0, ty0, tx1, ty1 = target_box if target_box is not None else (0, 0, *target_size)
+            for t in group["target_points"]:
+                p = np.array(json.loads(t))
+                lost += not (((p[:, 0] >= tx0) & (p[:, 0] <= tx1) &
+                              (p[:, 1] >= ty0) & (p[:, 1] <= ty1)).any())
 
         if debug is not None:
             debug[pair_id] = {
@@ -358,6 +367,7 @@ def predict(queries, pairs, cache, model, data_dir, configs, seed=0, debug=None)
                 predictions[config][rows] = predicted.cpu().numpy()
 
     print(f"Affine found for {found}/{len(groups)} pairs")
+    print(f"Target fuori dal crop: {lost} / {len(queries)}")
     return predictions
 
 
@@ -401,7 +411,8 @@ def main():
         return queries, pairs, cache
 
     queries, pairs, cache = load_split("train")
-    configs = config_list()
+    # only per debug configs = config_list()
+    configs = [("global", 0.0, False)]
     predictions = predict(queries, pairs, cache, model, args.data_dir, configs)
 
     rows = []
