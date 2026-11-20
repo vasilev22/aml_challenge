@@ -18,7 +18,7 @@ PATCH_SIZE = 16
 GRID_SIZE = IMAGE_SIZE // PATCH_SIZE
 
 MODEL_NAME = "facebook/dinov3-vitb16-pretrain-lvd1689m" #use this later one
-#MODEL_NAME = "facebook/dinov3-vits16-pretrain-lvd1689m"
+#gMODEL_NAME = "facebook/dinov3-vits16-pretrain-lvd1689m"
 
 def load_model(device):
     model = AutoModel.from_pretrained(
