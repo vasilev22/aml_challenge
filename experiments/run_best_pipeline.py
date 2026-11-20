@@ -42,12 +42,13 @@ SPLITS = ["train", "test"]
 
 VITB_MAPS = f"{SM}/train_dinov2_vitb14_798_fp16_{C}.pt"
 VITL_FEATS = f"{FE}/train_dinov2_vitl14_hf_798_fp16_{C}.pt"
-SD_FEATS = f"{FE}/train_sdx_up1_e4_flip_t101_{C}.pt"
+#SD_FEATS = f"{FE}/train_sdx_up1_e4_flip_t101_{C}.pt"
 HEAD_MAPS = f"{SM}/train_head_conv_h384_o256_nested.pt"
-FUSED_MAPS = f"{SM}/train_head_conv_h384_o256_nested_fused.pt"
-COARSE = {VITB_MAPS: 0.25, HEAD_MAPS: 0.75, FUSED_MAPS: 0.5}
+#FUSED_MAPS = f"{SM}/train_head_conv_h384_o256_nested_fused.pt"
+#COARSE = {VITB_MAPS: 0.25, HEAD_MAPS: 0.75, FUSED_MAPS: 0.5}
+COARSE = {VITB_MAPS: 0.25, HEAD_MAPS: 0.75}
 REFINE = {"dinov2_vitb14": 0.75, "dinov2_vitl14_hf": 0.25}
-REFINE_MAPS = [f"{SM}/train_refine_{b}_448_f0.4_coarse_BHF.pt" for b in REFINE]
+REFINE_MAPS = [f"{SM}/train_refine_{b}_448_f0.4_coarse_BH.pt" for b in REFINE]
 ALPHA, METHOD = 0.6, ("window", 2, 0.03)
 
 
@@ -74,14 +75,14 @@ def main():
     for s in SPLITS:
         step(f"2. zoom ViT-L ({s})", [VITL_FEATS.replace("/train_", f"/{s}_")],
              [PY, "experiments/zoom_pipeline.py", "--split", s, "--backbone", "dinov2_vitl14_hf", "--save_features"])
-    for s in SPLITS:
-        step(f"3. SD 2.1 features ({s})", [SD_FEATS.replace("/train_", f"/{s}_")],
-             [PY, "experiments/sd_sweep.py", "--split", s, "--sd", "sd21", "--timestep", "101", "--samples", "4",
-              "--only", "up1_e4_flip", "--save_features", "up1_e4_flip"])
+    #for s in SPLITS:
+    #    step(f"3. SD 2.1 features ({s})", [SD_FEATS.replace("/train_", f"/{s}_")],
+    #         [PY, "experiments/sd_sweep.py", "--split", s, "--sd", "sd21", "--timestep", "101", "--samples", "4",
+    #         "--only", "up1_e4_flip", "--save_features", "up1_e4_flip"])
     step("4. head on ViT-L", [HEAD_MAPS, test(HEAD_MAPS)],
          [PY, "experiments/train_head.py", "--nested", "--features", VITL_FEATS])
-    step("5. fused head on ViT-L + SD", [FUSED_MAPS, test(FUSED_MAPS)],
-         [PY, "experiments/train_head.py", "--nested", "--features", VITL_FEATS, "--extra_features", SD_FEATS])
+    #step("5. fused head on ViT-L + SD", [FUSED_MAPS, test(FUSED_MAPS)],
+    #     [PY, "experiments/train_head.py", "--nested", "--features", VITL_FEATS, "--extra_features", SD_FEATS])
     for s in SPLITS:
         for backbone, out in zip(REFINE, REFINE_MAPS):
             step(f"6. refine with {backbone} ({s})", [out.replace("/train_", f"/{s}_")],
