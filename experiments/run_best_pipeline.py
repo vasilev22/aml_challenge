@@ -40,13 +40,10 @@ SM, FE = "cache/simmaps", "cache/features"
 PY = sys.executable
 SPLITS = ["train", "test"]
 
-VITB_MAPS = f"{SM}/train_dinov2_vitb14_798_fp16_{C}.pt"
-VITL_FEATS = f"{FE}/train_dinov2_vitl14_hf_798_fp16_{C}.pt"
 #SD_FEATS = f"{FE}/train_sdx_up1_e4_flip_t101_{C}.pt"
 HEAD_MAPS = f"{SM}/train_head_conv_h384_o256_nested.pt"
 #FUSED_MAPS = f"{SM}/train_head_conv_h384_o256_nested_fused.pt"
 #COARSE = {VITB_MAPS: 0.25, HEAD_MAPS: 0.75, FUSED_MAPS: 0.5}
-COARSE = {VITB_MAPS: 0.25, HEAD_MAPS: 0.75}
 REFINE = {"dinov2_vitb14": 0.75, "dinov2_vitl14_hf": 0.25}
 REFINE_MAPS = [f"{SM}/train_refine_{b}_448_f0.4_coarse_BH.pt" for b in REFINE]
 ALPHA, METHOD = 0.6, ("window", 2, 0.03)
@@ -67,7 +64,16 @@ def test(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", default="submissions/fused_vote_refineBL_recipe.csv")
+    parser.add_argument("--cache",default="not")
     args = parser.parse_args()
+
+    if args.cache=="not":
+        VITB_MAPS = f"{SM}/train_dinov2_vitb14_798_fp16_{C}.pt"
+        VITL_FEATS = f"{FE}/train_dinov2_vitl14_hf_798_fp16_{C}.pt"
+    else:
+        VITB_MAPS = f"{args.cache}/simmaps/train_dinov2_vitb14_798_fp16_{C}.pt"
+        VITL_FEATS = f"{args.cache}/features/train_dinov2_vitl14_hf_798_fp16_{C}.pt"
+    COARSE = {VITB_MAPS: 0.25, HEAD_MAPS: 0.75}
 
     for s in SPLITS:
         step(f"1. zoom ViT-B ({s})", [VITB_MAPS.replace("/train_", f"/{s}_")],
