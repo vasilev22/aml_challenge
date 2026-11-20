@@ -61,6 +61,7 @@ def main():
     parser.add_argument("--name", default=None, help="suffix naming the coarse config")
     parser.add_argument("--save_features", action="store_true",
                         help="also save per-query window features (for train_head.py --windows)")
+    parser.add_argument("--boxes_dir", default=None, help="cartella dei box (default: <cache_dir>/boxes)")
     args = parser.parse_args()
 
     start = time.time()
@@ -72,7 +73,9 @@ def main():
     map_paths = [os.path.join(os.path.dirname(p), os.path.basename(p).replace("train_", f"{args.split}_", 1))
                  for p in args.maps]
     crops = torch.load(map_paths[0])["crops"]
-    boxes = json.load(open(os.path.join(args.cache_dir, "boxes", f"{args.split}_{crops}.json")))
+    #boxes = json.load(open(os.path.join(args.cache_dir, "boxes", f"{args.split}_{crops}.json")))
+    boxes_dir = args.boxes_dir or os.path.join(args.cache_dir, "boxes")
+    boxes = json.load(open(os.path.join(boxes_dir, f"{args.split}_{crops}.json")))
 
     zooms, globs, regions = load_maps(map_paths, ids)
     weights = args.weights or [1.0] * len(map_paths)

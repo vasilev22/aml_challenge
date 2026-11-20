@@ -344,8 +344,8 @@ def main():
     parser.add_argument("--arch", choices=["conv", "linear"], default="conv")
     parser.add_argument("--hidden", type=int, default=384)
     parser.add_argument("--out", type=int, default=256)
-    parser.add_argument("--dropout", type=float, default=0.1)
-    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--dropout", type=float, default=0.3)#0.1 previous
+    parser.add_argument("--lr", type=float, default=5e-2)#1e-3  previous
     parser.add_argument("--wd", type=float, default=0.05)
     parser.add_argument("--epochs", type=int, default=40)
     parser.add_argument("--patience", type=int, default=8)

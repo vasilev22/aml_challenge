@@ -94,7 +94,7 @@ def main():
             step(f"6. refine with {backbone} ({s})", [out.replace("/train_", f"/{s}_")],
                  [PY, "experiments/refine_points.py", "--split", s, "--backbone", backbone,
                   "--maps", *COARSE, "--weights", *map(str, COARSE.values()), "--alpha", "0.0",
-                  "--window", "2", "0.03", "--frac", "0.4", "--res", "448", "--name", "coarse_BHF"])
+                  "--window", "2", "0.03", "--frac", "0.4", "--res", "448", "--name", "coarse_BHF", "--boxes_dir", f"{args.cache}/boxes"])
 
     print("[run ] 7. final blend")
     weights = list(REFINE.values())
