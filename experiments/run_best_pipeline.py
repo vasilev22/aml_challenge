@@ -45,7 +45,7 @@ HEAD_MAPS = f"{SM}/train_head_conv_h384_o256_nested.pt"
 #FUSED_MAPS = f"{SM}/train_head_conv_h384_o256_nested_fused.pt"
 #COARSE = {VITB_MAPS: 0.25, HEAD_MAPS: 0.75, FUSED_MAPS: 0.5}
 REFINE = {"dinov2_vitb14": 0.75, "dinov2_vitl14_hf": 0.25}
-REFINE_MAPS = [f"{SM}/train_refine_{b}_448_f0.4_coarse_BH.pt" for b in REFINE]
+REFINE_MAPS = [f"{SM}/train_refine_{b}_448_f0.4_coarse_BHF.pt" for b in REFINE]
 ALPHA, METHOD = 0.6, ("window", 2, 0.03)
 
 
